@@ -22,7 +22,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
@@ -45,7 +44,6 @@ import org.springframework.web.filter.CompositeFilter;
 @SpringBootApplication
 @EnableOAuth2Client
 @RestController
-
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class DemoApplication extends WebSecurityConfigurerAdapter {
 
@@ -116,6 +114,13 @@ public class DemoApplication extends WebSecurityConfigurerAdapter {
 	public ClientResources facebook() {
 		return new ClientResources();
 	}
+	
+	@Bean
+	@ConfigurationProperties("google")
+	public ClientResources google() {
+		return new ClientResources();
+	}
+
 
 	private Filter ssoFilter() {
 
@@ -123,12 +128,20 @@ public class DemoApplication extends WebSecurityConfigurerAdapter {
 		List<Filter> filters = new ArrayList<>();
 		filters.add(ssoFilter(facebook(), "/login/facebook"));
 		filters.add(ssoFilter(github(), "/login/github"));
+		filters.add(ssoFilter(linkedin(), "/login/linkedin"));
+		filters.add(ssoFilter(linkedin(), "/login/google"));
 		filter.setFilters(filters);
 		return filter;
 
 		// return filter;
 	}
 	
+	@Bean
+	@ConfigurationProperties("linkedin")
+	public ClientResources linkedin() {
+		return new ClientResources();
+	}
+
 	/**public AuthenticationProvider activeDirectoryLdapAuthenticationProvider() {
         ActiveDirectoryLdapAuthenticationProvider provider = new ActiveDirectoryLdapAuthenticationProvider(DOMAIN, URL);
         provider.setConvertSubErrorCodesToExceptions(true);
