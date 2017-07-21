@@ -13,11 +13,27 @@
     
     <script>
     
+    
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+    
     function clic(){
-    	alert("antes de llamar");
-    	$.post('/logout', {}).success(function() {
-    	        alert("logout success");
-    	        $location.path("/");
+    	var x = getCookie("XSRF-TOKEN");
+    	$.post('/logout?_csrf='+x, {}).success(function() {
+    	        window.location = "/";
     	      }).error(function(data) {
     	    	  alert("logout error");
     	      });
@@ -26,6 +42,18 @@
     </script>
 </head>
 <body>
+
+	<table cellspacing="0" border="1"  align="center"><tr><td>
+	<table>
+	<tr><td></td><td></td><td></td><td></td></tr>
+	<tr><td></td><td>USER: </td><td></td><td><input type="text"></td></tr>
+	<tr><td></td><td></td><td></td><td></td></tr>
+	<tr><td></td><td>PASSWORD: </td><td></td><td><input type="password"></td></tr>
+	<tr><td></td><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td></td><td></td></tr>
+	</table>
+	
+	</td></tr></table>
 
 	<h1>Demo</h1>
 	<a href="/login/facebook"> LOGIN WITH FACEBOOK</a>

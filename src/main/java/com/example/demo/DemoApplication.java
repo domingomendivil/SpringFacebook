@@ -91,10 +91,13 @@ public class DemoApplication extends WebSecurityConfigurerAdapter {
 	String home() {
 		return "Hello World!";
 	}
+	
+	
 
 	@RequestMapping({ "/user", "/me" })
 	public Map<String, String> user(Principal principal) {
 		Map<String, String> map = new LinkedHashMap<>();
+		System.out.println("principal : "+principal.getName());
 		map.put("name", principal.getName());
 		return map;
 	}
@@ -172,8 +175,11 @@ public class DemoApplication extends WebSecurityConfigurerAdapter {
 		http.antMatcher("/**").authorizeRequests().antMatchers("/", "/login**", "/webjars/**").permitAll().anyRequest()
 				.authenticated().
 		and().exceptionHandling()
-			      .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")).		
+			      .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")).
+		and().logout().logoutSuccessUrl("/").permitAll().	      
 		and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+		
+		
 		http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 		
 
