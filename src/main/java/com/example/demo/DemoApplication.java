@@ -97,7 +97,7 @@ public class DemoApplication extends WebSecurityConfigurerAdapter {
 	@RequestMapping({ "/user", "/me" })
 	public Map<String, String> user(Principal principal) {
 		Map<String, String> map = new LinkedHashMap<>();
-		System.out.println("principal : "+principal.getName());
+		System.out.println("principal : "+principal);
 		map.put("name", principal.getName());
 		return map;
 	}
