@@ -129,7 +129,7 @@ public class DemoApplication extends WebSecurityConfigurerAdapter {
 		filters.add(ssoFilter(facebook(), "/login/facebook"));
 		filters.add(ssoFilter(github(), "/login/github"));
 		filters.add(ssoFilter(linkedin(), "/login/linkedin"));
-		filters.add(ssoFilter(linkedin(), "/login/google"));
+		filters.add(ssoFilter(google(), "/login/google"));
 		filter.setFilters(filters);
 		return filter;
 
