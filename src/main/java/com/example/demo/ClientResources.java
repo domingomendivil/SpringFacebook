@@ -6,7 +6,7 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
 
 /**
  * Example
- * @author d0178
+ * @author d0178 -
  *
  */
 class ClientResources {
