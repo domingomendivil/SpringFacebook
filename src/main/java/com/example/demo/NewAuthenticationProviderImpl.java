@@ -4,6 +4,11 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
+/**
+ * 
+ * @author d0178
+ *
+ */
 public class NewAuthenticationProviderImpl implements AuthenticationProvider{
 
 	@Override
