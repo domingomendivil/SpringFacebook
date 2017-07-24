@@ -2,10 +2,16 @@ language: java
 jdk:
 - openjdk8
 
- 
+sudo: false
+
+install: true
+
+
 deploy:
+  skip_cleanup: true
   provider: heroku
-  api-key:  
-     secure: "8baccd35-fa09-4d88-ae57-0d34b0bfcbca" 
-  app: springfacebook   
+  api_key:
+    secure: 8baccd35-fa09-4d88-ae57-0d34b0bfcbca
+  app:
+    feature_deploy_heroku_travis: springfacebook
   
