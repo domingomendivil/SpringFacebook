@@ -1,1 +1,5 @@
 com\example\demo\DemoApplication.class
+com\example\demo\NewAuthenticationProviderImpl.class
+com\example\demo\DemoApplication$AuthorizationServer.class
+com\example\demo\ClientResources.class
+com\example\demo\DemoApplication$ResourceServerConfiguration.class

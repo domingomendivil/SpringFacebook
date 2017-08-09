@@ -2,9 +2,11 @@ package com.example.demo;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.Filter;
 
@@ -33,6 +35,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -56,23 +61,27 @@ public class DemoApplication extends WebSecurityConfigurerAdapter {
 		}
 	}
 
+	@Configuration
 	@EnableAuthorizationServer
 	protected static class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
+		
 		@Autowired
 		private AuthenticationManager authenticationManager;
+		
+		
 
 		@Override // [2]
 		public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 			System.out.println("CONFIGURING ENDPOINT ::::::");
 			System.out.println("authenticationManager "+authenticationManager);
 			endpoints.authenticationManager(authenticationManager);
+			
 		}
 
 		@Override // [3]
 		public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 			System.out.println("CONFIGURING:::::::::::: authorization server");
-			clients.inMemory().withClient("sampleIdClient").authorizedGrantTypes("password")
-			          .scopes("read")
+			clients.inMemory().withClient("sampleIdClient")
 			          .autoApprove(true)
 			          .and()
 			          .withClient("clientIdPassword")
@@ -81,6 +90,8 @@ public class DemoApplication extends WebSecurityConfigurerAdapter {
 			            "password","authorization_code", "refresh_token")
 			          .scopes("read");
 		}
+		
+		
 	}
 
 	@Autowired
@@ -172,17 +183,23 @@ public class DemoApplication extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		
-		http.antMatcher("/**").authorizeRequests().antMatchers("/", "/login**", "/webjars/**").permitAll().anyRequest()
-				.authenticated().
+		http.antMatcher("/**").authorizeRequests().antMatchers("/", "/login**", "/webjars/**","/oauth/token").permitAll().anyRequest()
+				.authenticated().and().formLogin().permitAll().
 		and().exceptionHandling()
 			      .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")).
-		and().logout().logoutSuccessUrl("/").permitAll().	      
+		and().logout().logoutSuccessUrl("/").permitAll().
 		and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
 		
 		
 		http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 		
 
+	}
+	
+	@Bean
+	public TokenStore tokenStore(){
+		System.out.println("IN MEMORY &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+		return new InMemoryTokenStore(); 
 	}
 
 	@Bean
@@ -208,4 +225,7 @@ public class DemoApplication extends WebSecurityConfigurerAdapter {
 	      throws Exception {
 	        return super.authenticationManagerBean();
 	    }
+	    
+	    
+	    
 }
